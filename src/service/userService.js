@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import mysql from 'mysql2/promise';
-import bluebird from 'bluebird';
+//import mysql from 'mysql2/promise';
+//import bluebird from 'bluebird';
 const salt = bcrypt.genSaltSync(10);
 import db from '../models/index';
 
@@ -50,9 +50,8 @@ const getUserInfo = async () => {
         attributes: ["url", "description"]
     })
 
-    console.log('>>>>>>>> check include:', newUser)
-    console.log('>>>>>>>> check include:', roles)
-
+    // console.log('>>>>>>>> check include:', newUser)
+    // console.log('>>>>>>>> check include:', roles)
 
     // get info all user
     let userInfo = []

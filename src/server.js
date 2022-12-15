@@ -41,6 +41,7 @@ connection();
 
 const PORT = process.env.PORT || 6969;
 // port === undefined => port = 6969
+console.log('>>>>>>>>> check port:', process.env.PORT)
 
 app.listen(PORT, () => {
     console.log("JWT Backend Nodejs is runing on the port:" + PORT)
