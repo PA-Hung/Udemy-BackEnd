@@ -5,6 +5,11 @@ const testAPI = (req, res) => {
     })
 }
 
+const handleRegister = (req, res) => {
+    console.log('Call Me:', req.body)
+}
+
 module.exports = {
-    testAPI: testAPI
+    testAPI: testAPI,
+    handleRegister: handleRegister
 }
