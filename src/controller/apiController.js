@@ -1,4 +1,4 @@
-import udemyService from '../service/udemyService';
+import apiService from '../service/apiService';
 
 
 const testAPI = (req, res) => {
@@ -27,7 +27,7 @@ const handleRegister = async (req, res) => {
             })
         }
         // services : create user
-        let data = await udemyService.registerNewUser(req.body)
+        let data = await apiService.registerNewUser(req.body)
         return res.status(200).json({
             EM: data.EM, // Error Message
             EC: data.EC, // error code
@@ -44,7 +44,26 @@ const handleRegister = async (req, res) => {
 
 }
 
+const handleLogin = async (req, res) => {
+    //console.log('>>>>>>>> check login', req.body)
+    try {
+        let data = await apiService.handleUserLogin(req.body)
+        return res.status(200).json({
+            EM: data.EM, // Error Message
+            EC: data.EC, // Error Code
+            DT: data.DT, // Data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            EM: 'Error from server', // Error Message
+            EC: '-1', // Error Code
+            DT: '', // Data
+        })
+    }
+
+}
+
 module.exports = {
-    testAPI: testAPI,
-    handleRegister: handleRegister
+    testAPI, handleRegister, handleLogin
 }
