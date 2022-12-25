@@ -52,8 +52,15 @@ const createFunc = async (req, res) => {
     }
 }
 
-const updateFunc = (req, res) => {
+const updateFunc = async (req, res) => {
     try {
+        // validate
+        let data = await userApiService.updateUser(req.body);
+        return res.status(200).json({
+            EM: data.EM, // Error Message
+            EC: data.EC, // Error Code
+            DT: data.DT, // Data
+        })
 
     } catch (e) {
         console.log('>>>>> error from get all user :', e)

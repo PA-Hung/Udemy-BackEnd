@@ -1,11 +1,7 @@
 import db from "../models";
-import bcrypt from 'bcryptjs';
-const salt = bcrypt.genSaltSync(10);
+import apiService from '../service/apiService'
 
-const hashUserPassword = (userPassword) => {
-    let hashUserPassword = bcrypt.hashSync(userPassword, salt);
-    return hashUserPassword
-}
+
 
 const getAllUser = async () => {
 
@@ -51,12 +47,13 @@ const getAllUserWithPagination = async (page, limit) => {
         const { count, rows } = await db.User.findAndCountAll({
             offset: offset,
             limit: limit,
-            attributes: ["id", "username", "email", "phone", "sex"],
+            attributes: ["id", "username", "email", "phone", "sex", "address"],
             raw: true,
             nest: true,
+            order: [['id', 'DESC']],
             include: {
                 model: db.Group,
-                attributes: ["name", "description"]
+                attributes: ["name", "description", "id"]
             },
         },)
 
@@ -79,9 +76,28 @@ const getAllUserWithPagination = async (page, limit) => {
 }
 
 const createUser = async (data) => {
-    let hashPass = hashUserPassword(data.password)
+    let hashPass = apiService.hashUserPassword(data.password)
     try {
-        await db.User.create(data)
+        // check email/phone đã tồn tại chưa ?
+        let isEmailExist = await apiService.checkEmailExist(data.email)
+        //console.log('check email ton tai >>>>>>', isEmailExist)
+        if (isEmailExist === true) {
+            return {
+                EM: 'Email đã tồn tại', // Error Message
+                EC: 1, // error code
+                DT: 'email',
+            }
+        }
+        let isPhoneExist = await apiService.checkPhoneExist(data.phone)
+        if (isPhoneExist === true) {
+            return {
+                EM: 'Phone đã tồn tại', // Error Message
+                EC: 1, // error code
+                DT: 'phone',
+            }
+        }
+        await db.User.create({ ...data, password: hashPass })
+        // copy lại cục data, riêng trường password thì ghi đè bằng hashPass
         return {
             EM: 'Create User success',
             EC: 0,
@@ -94,12 +110,44 @@ const createUser = async (data) => {
 
 const updateUser = async (data) => {
     try {
-        let user = db.User.update(
-            { email: data.email, username: data.username },
-            { where: { id: data.id } })
-
+        if (!data.groupId) {
+            return {
+                EM: 'Update error with empty group Id',
+                EC: 1,
+                DT: 'group',
+            }
+        }
+        let user = await db.User.findOne(
+            { where: { id: data.id } }
+        )
+        //console.log('>>>>>>>>>> check user data:', data)
+        //console.log('>>>>>>>>>> check user:', user)
+        if (user) {
+            await user.update({
+                username: data.username,
+                address: data.address,
+                sex: data.sex,
+                groupId: data.groupId
+            })
+            return {
+                EM: 'Update user succeeds',
+                EC: 0,
+                DT: '',
+            }
+        } else {
+            return {
+                EM: 'Update error',
+                EC: 1,
+                DT: '',
+            }
+        }
     } catch (e) {
         console.log(e)
+        return {
+            EM: 'Error from update user service',
+            EC: 1,
+            DT: [],
+        }
     }
 
 }
