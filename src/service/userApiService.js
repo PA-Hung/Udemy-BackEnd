@@ -81,11 +81,12 @@ const getAllUserWithPagination = async (page, limit) => {
 const createUser = async (data) => {
     let hashPass = hashUserPassword(data.password)
     try {
-        await db.User.create({
-            email: data.email,
-            password: hashPass,
-            username: data.username
-        })
+        await db.User.create(data)
+        return {
+            EM: 'Create User success',
+            EC: 0,
+            DT: [],
+        }
     } catch (e) {
         console.log(e)
     }
