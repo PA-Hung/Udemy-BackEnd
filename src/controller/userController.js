@@ -35,6 +35,7 @@ const readFunc = async (req, res) => {
 const createFunc = async (req, res) => {
     try {
         // validate
+        console.log('>>>>>>>>> check data from frond end:', req.body)
         let data = await userApiService.createUser(req.body);
         return res.status(200).json({
             EM: data.EM, // Error Message
