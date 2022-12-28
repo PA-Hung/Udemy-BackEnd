@@ -2,6 +2,7 @@ import userApiService from '../service/userApiService'
 
 const readFunc = async (req, res) => {
     try {
+        //console.log(req.user)
         if (req.query.page && req.query.limit) {
             let page = req.query.page
             let limit = req.query.limit
@@ -35,7 +36,7 @@ const readFunc = async (req, res) => {
 const createFunc = async (req, res) => {
     try {
         // validate
-        console.log('>>>>>>>>> check data from frond end:', req.body)
+        //console.log('>>>>>>>>> check data from frond end:', req.body)
         let data = await userApiService.createUser(req.body);
         return res.status(200).json({
             EM: data.EM, // Error Message
@@ -75,7 +76,7 @@ const updateFunc = async (req, res) => {
 
 const deleteFunc = async (req, res) => {
     try {
-        console.log('Check user id from front end', req.body)
+        //console.log('Check user id from front end', req.body)
         let data = await userApiService.deleteUser(req.body.id)
         return res.status(200).json({
             EM: data.EM, // Error Message

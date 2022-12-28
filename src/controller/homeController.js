@@ -5,6 +5,7 @@ const handleTest = (req, res) => {
 }
 
 const handleUserPage = async (req, res) => {
+
     let userInfo = await userServices.getUserInfo()
     //console.log('check user info >>>>', userInfo)
     return res.render("user.ejs", { userInfo })

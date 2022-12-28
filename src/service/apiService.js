@@ -2,6 +2,10 @@ import db from '../models/index';
 import bcrypt from 'bcryptjs';
 const salt = bcrypt.genSaltSync(10);
 import { Op } from 'sequelize';
+import { getGroupWithRoles } from './JWTService';
+import { createJWT } from '../middleware/JWTAction'
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, './.env') })
 
 const hashUserPassword = (userPassword) => {
     let hashUserPassword = bcrypt.hashSync(userPassword, salt);
@@ -56,7 +60,8 @@ const registerNewUser = async (rawUserData) => {
             email: rawUserData.email,
             phone: rawUserData.phone,
             username: rawUserData.username,
-            password: hashPass
+            password: hashPass,
+            groupId: 4
         })
         return {
             EM: 'Đã tạo thành công người dùng', // Message
@@ -77,7 +82,7 @@ const checkPassword = (inputPassword, hashPassword) => {
 }
 
 const handleUserLogin = async (rawLoginData) => {
-    console.log('>>>>>>>> check raw Login data', rawLoginData)
+    //console.log('>>>>>>>> check raw Login data', rawLoginData)
     try {
         let userLogin = await db.User.findOne({
             where: {
@@ -88,15 +93,26 @@ const handleUserLogin = async (rawLoginData) => {
             }
         })
 
-        // console.log('>>>>>>> check user login javascript object', userLogin.get({ plain: true }))
-        // console.log('>>>>>>> check user login sequelize object', userLogin)
         if (userLogin) {
             let isCorrectPassword = checkPassword(rawLoginData.password, userLogin.password)
             if (isCorrectPassword === true) {
+                // let token
+
+                // test roles
+                let groupWithRoles = await getGroupWithRoles(userLogin)
+                let payload = {
+                    email: userLogin.email,
+                    groupWithRoles,
+                    expiresIn: process.env.JWT_EXPIRES_IN
+                }
+                let token = createJWT(payload)
                 return {
                     EM: 'User login succeed', // Error Message
                     EC: 0, // error code
-                    DT: '',
+                    DT: {
+                        access_token: token,
+                        groupWithRoles: groupWithRoles
+                    },
                 }
             }
 
@@ -107,17 +123,6 @@ const handleUserLogin = async (rawLoginData) => {
             EM: 'Email/điện thoại hoặc mật khẩu không đúng', // Error Message
             EC: 1, // error code
             DT: '',
-        }
-
-
-
-
-        if (isPhoneExist === true) {
-            return {
-                EM: 'Email hoặc số điện thoại không đúng', // Error Message
-                EC: 1, // error code
-                DT: '',
-            }
         }
 
     } catch (e) {

@@ -48,6 +48,11 @@ const handleLogin = async (req, res) => {
     //console.log('>>>>>>>> check login', req.body)
     try {
         let data = await apiService.handleUserLogin(req.body)
+        // set cookie
+        res.cookie('jwt', data.DT.access_token, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 1000
+        })
         return res.status(200).json({
             EM: data.EM, // Error Message
             EC: data.EC, // Error Code
