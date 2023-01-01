@@ -103,7 +103,7 @@ const handleUserLogin = async (rawLoginData) => {
                 let payload = {
                     email: userLogin.email,
                     groupWithRoles,
-                    expiresIn: process.env.JWT_EXPIRES_IN
+                    username: userLogin.username
                 }
                 let token = createJWT(payload)
                 return {
@@ -111,7 +111,9 @@ const handleUserLogin = async (rawLoginData) => {
                     EC: 0, // error code
                     DT: {
                         access_token: token,
-                        groupWithRoles: groupWithRoles
+                        groupWithRoles: groupWithRoles,
+                        email: userLogin.email,
+                        username: userLogin.username
                     },
                 }
             }
