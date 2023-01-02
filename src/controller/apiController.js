@@ -71,6 +71,24 @@ const handleLogin = async (req, res) => {
 
 }
 
+const handLogout = (req, res) => {
+    try {
+        res.clearCookie("jwt");
+        return res.status(200).json({
+            EM: "clear cookie done", // Error Message
+            EC: 0, // Error Code
+            DT: '', // Data
+        })
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({
+            EM: 'Error from server', // Error Message
+            EC: '-1', // Error Code
+            DT: '', // Data
+        })
+    }
+}
+
 module.exports = {
-    testAPI, handleRegister, handleLogin
+    testAPI, handleRegister, handleLogin, handLogout
 }
