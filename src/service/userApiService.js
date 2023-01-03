@@ -1,8 +1,6 @@
 import db from "../models";
 import apiService from '../service/apiService'
 
-
-
 const getAllUser = async () => {
 
     try {
