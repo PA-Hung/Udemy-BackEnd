@@ -23,8 +23,7 @@ const readFunc = async (req, res) => {
 
 const createFunc = async (req, res) => {
     try {
-        // validate
-        //console.log('>>>>>>>>> check data from frond end:', req.body)
+
         let data = await roleApiService.createNewRoles(req.body);
         return res.status(200).json({
             EM: data.EM, // Error Message
@@ -33,7 +32,6 @@ const createFunc = async (req, res) => {
         })
 
     } catch (e) {
-        console.log('>>>>> error from get all user :', e)
         return res.status(500).json({
             EM: 'Error from server', // Error Message
             EC: '-1', // Error Code
@@ -82,8 +80,46 @@ const deleteFunc = async (req, res) => {
     }
 }
 
+const getRoleByGroup = async (req, res) => {
+    try {
+        let id = req.params.groupId
+        let data = await roleApiService.getAllRolesByGroup(id);
+        return res.status(200).json({
+            EM: data.EM, // Error Message
+            EC: data.EC, // Error Code
+            DT: data.DT, // Data
+        })
+
+    } catch (e) {
+        console.log('>>>>> error from get all roles :', e)
+        return res.status(500).json({
+            EM: 'Error from roleController', // Error Message
+            EC: '-1', // Error Code
+            DT: '', // Data
+        })
+    }
+}
+
+const assignRoleToGroup = async (req, res) => {
+    try {
+        let data = await roleApiService.assignRoleToGroup(req.body.data);
+        return res.status(200).json({
+            EM: data.EM, // Error Message
+            EC: data.EC, // Error Code
+            DT: data.DT, // Data
+        })
+
+    } catch (e) {
+        return res.status(500).json({
+            EM: 'Error from server', // Error Message
+            EC: '-1', // Error Code
+            DT: '', // Data
+        })
+    }
+}
+
 module.exports = {
-    readFunc, createFunc, updateFunc, deleteFunc
+    readFunc, createFunc, updateFunc, deleteFunc, getRoleByGroup, assignRoleToGroup
 }
 
 

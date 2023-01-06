@@ -95,7 +95,7 @@ const deleteFunc = async (req, res) => {
 }
 
 const getUserAccount = async (req, res) => {
-    console.log('check user : ', req.user)
+    //console.log('check user : ', req.user)
     return res.status(200).json({
         EM: 'ok', // Error Message
         EC: 0, // Error Code

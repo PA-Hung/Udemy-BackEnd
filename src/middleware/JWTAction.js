@@ -75,7 +75,7 @@ const checkUserPermission = (req, res, next) => {
                 EM: 'Bạn không có quyền truy cập roles'
             })
         }
-        let canAccess = roles.some(item => item.url === currentURL)
+        let canAccess = roles.some(item => item.url === currentURL || currentURL.includes(item.url))
         // console.log('>>>>>>>>>>>>>>>>>>>XXXXXXXXXXXXXXXXXXXXXXXXXX>>>>>>>>>>>>>>>>')
         // console.log('>>> decoded URL : ', req.user.groupWithRoles.Roles)
         // console.log('>>> current URL : ', req.path)
