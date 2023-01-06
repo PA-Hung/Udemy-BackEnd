@@ -48,7 +48,7 @@ const getAllUserWithPagination = async (page, limit) => {
             attributes: ["id", "username", "email", "phone", "sex", "address"],
             raw: true,
             nest: true,
-            order: [['id', 'DESC']],
+            order: [['id', 'ASC']],
             include: {
                 model: db.Group,
                 attributes: ["name", "description", "id"]
